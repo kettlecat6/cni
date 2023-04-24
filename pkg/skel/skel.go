@@ -150,6 +150,7 @@ func (t *dispatcher) getCmdArgsFromEnv() (string, *CmdArgs, *types.Error) {
 		Path:        path,
 		StdinData:   stdinData,
 	}
+	_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: cmd args: %v", cmdArgs))
 	return cmd, cmdArgs, nil
 }
 
