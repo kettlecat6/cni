@@ -162,6 +162,7 @@ func (t *dispatcher) checkVersionAndCall(cmdArgs *CmdArgs, pluginVersionInfo ver
 	_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: checkVersionAndCall args: %v,%v", configVersion, pluginVersionInfo))
 	verErr := t.VersionReconciler.Check(configVersion, pluginVersionInfo)
 	if verErr != nil {
+		_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: Check err: %v", verErr))
 		return types.NewError(types.ErrIncompatibleCNIVersion, "incompatible CNI versions", verErr.Details())
 	}
 
@@ -221,6 +222,10 @@ func (t *dispatcher) pluginMain(cmdAdd, cmdCheck, cmdDel func(_ *CmdArgs) error,
 	switch cmd {
 	case "ADD":
 		err = t.checkVersionAndCall(cmdArgs, versionInfo, cmdAdd)
+		if err != nil {
+			_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: ADD err: %v", err))
+		}
+		_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: ADD success, error: %v", err))
 	case "CHECK":
 		configVersion, err := t.ConfVersionDecoder.Decode(cmdArgs.StdinData)
 		if err != nil {
@@ -245,6 +250,10 @@ func (t *dispatcher) pluginMain(cmdAdd, cmdCheck, cmdDel func(_ *CmdArgs) error,
 		return types.NewError(types.ErrIncompatibleCNIVersion, "plugin version does not allow CHECK", "")
 	case "DEL":
 		err = t.checkVersionAndCall(cmdArgs, versionInfo, cmdDel)
+		if err != nil {
+			_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: DEL err: %v", err))
+		}
+		_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: DEL success, error: %v", err))
 	case "VERSION":
 		if err := versionInfo.Encode(t.Stdout); err != nil {
 			return types.NewError(types.ErrIOFailure, err.Error(), "")
