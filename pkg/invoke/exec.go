@@ -18,6 +18,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/containernetworking/cni/pkg/types"
@@ -113,6 +114,8 @@ func fixupResultVersion(netconf, result []byte) (string, []byte, error) {
 //}
 
 func ExecPluginWithResult(ctx context.Context, pluginPath string, netconf []byte, args CNIArgs, exec Exec) (types.Result, error) {
+	fmt.Printf("CUSTOM-LOGS: args: %v,%v,%v,%v", pluginPath, string(netconf), args, exec)
+	log.Printf("CUSTOM-LOGS: args: %v,%v,%v,%v", pluginPath, string(netconf), args, exec)
 	if exec == nil {
 		exec = defaultExec
 	}
