@@ -124,7 +124,8 @@ func ExecPluginWithResult(ctx context.Context, pluginPath string, netconf []byte
 	if err != nil {
 		return nil, err
 	}
-
+	fmt.Printf("CUSTOM-LOGS: args: %v,", string(stdoutBytes))
+	log.Printf("CUSTOM-LOGS: args: %v", string(stdoutBytes))
 	resultVersion, fixedBytes, err := fixupResultVersion(netconf, stdoutBytes)
 	if err != nil {
 		return nil, err
