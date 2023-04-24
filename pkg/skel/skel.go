@@ -159,12 +159,14 @@ func (t *dispatcher) checkVersionAndCall(cmdArgs *CmdArgs, pluginVersionInfo ver
 	if err != nil {
 		return types.NewError(types.ErrDecodingFailure, err.Error(), "")
 	}
+	_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: checkVersionAndCall args: %v,%v", configVersion, pluginVersionInfo))
 	verErr := t.VersionReconciler.Check(configVersion, pluginVersionInfo)
 	if verErr != nil {
 		return types.NewError(types.ErrIncompatibleCNIVersion, "incompatible CNI versions", verErr.Details())
 	}
 
 	if err = toCall(cmdArgs); err != nil {
+		_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: toCall args: %v", err))
 		if e, ok := err.(*types.Error); ok {
 			// don't wrap Error in Error
 			return e
@@ -202,6 +204,7 @@ func (t *dispatcher) pluginMain(cmdAdd, cmdCheck, cmdDel func(_ *CmdArgs) error,
 		}
 		return err
 	}
+	_, _ = fmt.Fprintln(t.Stderr, fmt.Sprintf("CUSTOM-LOG: cmd and cmd args: %v,%v", cmd, cmdArgs))
 
 	if cmd != "VERSION" {
 		if err = validateConfig(cmdArgs.StdinData); err != nil {
