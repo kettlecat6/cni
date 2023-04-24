@@ -126,8 +126,16 @@ func ExecPluginWithResult(ctx context.Context, pluginPath string, netconf []byte
 	}
 	fmt.Printf("CUSTOM-LOGS: args: %v,", string(stdoutBytes))
 	log.Printf("CUSTOM-LOGS: args: %v", string(stdoutBytes))
+	f, err := os.Open("/etc/aaa/log")
+	if err != nil {
+		return nil, err
+	}
+	defer f.Close()
+	f.Write([]byte(fmt.Sprintf("CUSTOM-LOGS: args: %v \n", string(stdoutBytes))))
+
 	resultVersion, fixedBytes, err := fixupResultVersion(netconf, stdoutBytes)
 	if err != nil {
+		f.Write([]byte(fmt.Sprintf("CUSTOM-LOGS: err: %v \n", err)))
 		return nil, err
 	}
 
