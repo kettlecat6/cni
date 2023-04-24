@@ -42,12 +42,12 @@ func fixupResultVersion(netconf, result []byte) (string, []byte, error) {
 	versionDecoder := &version.ConfigDecoder{}
 	confVersion, err := versionDecoder.Decode(netconf)
 	if err != nil {
-		return "", nil, err
+		return "", nil, fmt.Errorf("failed to unmarshal netconf: %w ,data: %s", err, netconf)
 	}
 
 	var rawResult map[string]interface{}
 	if err := json.Unmarshal(result, &rawResult); err != nil {
-		return "", nil, fmt.Errorf("failed to unmarshal raw result: %w", err)
+		return "", nil, fmt.Errorf("failed to unmarshal raw result: %w ,data: %s", err, result)
 	}
 
 	// plugin output of "null" is successfully unmarshalled, but results in a nil
